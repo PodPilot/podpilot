@@ -2,7 +2,11 @@
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        rosarivo: ['Rosarivo', 'sans-serif'],
+      },
+    },
   },
   plugins: [require('@tailwindcss/typography'), require('daisyui')],
 };

@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useState, useRef } from 'react';
 import Input from './Input';
 import { sendQuery } from '../common/pilot';
+import TopicCard from './TopicCard';
 
 interface IContent {
   role: 'user' | 'pilot';
@@ -26,7 +27,7 @@ const firstMessages: PilotMessage[] = [
   {
     role: 'pilot',
     content: (
-      <article className="font-serif prose">
+      <article className="font-rosarivo prose">
         <h2>Welcome to PodPilot</h2>
       </article>
     ),
@@ -44,15 +45,8 @@ const renderPilotContent = (message: PilotMessage) => {
 const renderSuggestions = (suggestions: string[]) => (
   <div className="flex flex-row justify-start justify-items-center space-x-4">
     {suggestions.map((suggestion, idx) => (
-      <div
-        className="card w-32 h-32 bg-base-100 shadow"
-        onClick={console.log}
-        key={idx}
-      >
-        <h2 className="font-serif prose prose-sm card-title">
-          {suggestion}
-        </h2>
-      </div>
+      // TODO: update to pull label from suggestion
+      <TopicCard key={idx} label={suggestion} query={suggestion} />
     ))}
   </div>
 );
@@ -60,7 +54,9 @@ const renderSuggestions = (suggestions: string[]) => (
 const renderUserMessage = (message: UserMessage) => {
   return (
     <div className="chat chat-end">
-      <div className="chat-bubble">{message.content}</div>
+      <div className="chat-bubble prose prose-lg font-serif">
+        {message.content}
+      </div>
     </div>
   );
 };
