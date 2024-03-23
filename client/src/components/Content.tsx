@@ -1,5 +1,6 @@
 import { ReactElement, useEffect, useState, useRef } from 'react';
 import Input from './Input';
+import { QueryResponse, sendQuery } from '../common/agent';
 
 interface IContent {
   role: 'user' | 'pilot';
@@ -27,6 +28,15 @@ const firstMessage: PilotMessage = {
   ),
 };
 
+const pilotResponseToContent = (qr: QueryResponse): ReactElement => (
+  <div className="card w-96 bg-base-100 shadow-xl">
+    <div className="card-body">
+      <p>{qr.response}</p>
+      <p>{qr.suggestions}</p>
+    </div>
+  </div>
+);
+
 const renderPilotContent = (message: PilotMessage) => {
   return message.content;
 };
@@ -43,6 +53,8 @@ export default function Content() {
   const [conversation, setConversation] = useState<IContent[]>([
     firstMessage,
   ]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
   const container = useRef<HTMLDivElement>(null);
 
   const scroll = () => {
@@ -59,33 +71,41 @@ export default function Content() {
     scroll();
   }, [conversation]);
 
+  useEffect(() => {
+    const lastMessage = conversation[conversation.length - 1];
+
+    // if last message was a user message, go get a response
+    if (lastMessage.role === 'user') {
+      setLoading(true);
+      (async () => {
+        const queryResponse = await sendQuery(
+          (lastMessage as UserMessage).content
+        );
+        setLoading(false);
+
+        const pilotResponse: PilotMessage = {
+          role: 'pilot',
+          content: pilotResponseToContent(queryResponse),
+        };
+
+        setConversation([...conversation, pilotResponse]);
+      })();
+    }
+  }, [conversation]);
+
   const handleInputSubmit = async (e) => {
-    console.log(`submitting: ${e.target[0].value}`);
+    const query = e.target[0].value;
+    console.log(`submitting: ${query}`);
+
     e.preventDefault();
-
-    const newMessage: UserMessage = {
-      role: 'user',
-      content: e.target[0].value,
-    };
-
-    const pilotDummyResponse: PilotMessage = {
-      role: 'pilot',
-      content: (
-        <div className="card w-96 bg-base-100 shadow-xl">
-          <div className="card-body">
-            I heard "{e.target[0].value}"
-          </div>
-        </div>
-      ),
-    };
-
-    setConversation([
-      ...conversation,
-      newMessage,
-      pilotDummyResponse,
-    ]);
-
     e.target.reset();
+
+    const userMessage: UserMessage = {
+      role: 'user',
+      content: query,
+    };
+
+    setConversation([...conversation, userMessage]);
   };
 
   return (
@@ -111,7 +131,10 @@ export default function Content() {
           )}
         </div>
 
-        <Input handleSubmit={handleInputSubmit} />
+        <Input
+          handleSubmit={handleInputSubmit}
+          disabled={isLoading}
+        />
       </div>
     </>
   );

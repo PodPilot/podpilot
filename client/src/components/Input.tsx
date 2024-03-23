@@ -1,7 +1,9 @@
 export default function Input({
   handleSubmit,
+  disabled,
 }: {
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
+  disabled: boolean;
 }) {
   return (
     <footer className="footer flex justify-center w-full p-5">
@@ -11,6 +13,7 @@ export default function Input({
             type="text"
             className="grow"
             placeholder="Type your message..."
+            disabled={disabled}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
