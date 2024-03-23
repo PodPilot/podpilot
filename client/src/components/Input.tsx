@@ -1,29 +1,29 @@
-import { useState } from 'react';
-
-export default function Input() {
-  const [isTyping, setIsTyping] = useState(false);
-
-  const handleInputChange = (e) => {
-    if (e.target.value.length > 0) {
-      setIsTyping(true);
-    } else {
-      setIsTyping(false);
-    }
-  };
-
+export default function Input({ handleSubmit }) {
   return (
-    <div className=" w-1/2 z-30 fixed bottom-0 p-5">
-      <div className="input-group">
-        <input
-          type="text"
-          className="input input-primary w-full"
-          placeholder="Type your message..."
-          onChange={handleInputChange}
-        />
-        <button className="btn btn-square">
-          Send
-        </button>
-      </div>
+    <div className="flex justify-center w-4/5 p-5 bottom-0">
+      <form className="form-control w-4/5" onSubmit={handleSubmit}>
+        <label className="input input-primary flex items-center gap-2 w-full">
+          <input
+            type="text"
+            className="grow"
+            placeholder="Type your message..."
+          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"
+            />
+          </svg>
+        </label>
+      </form>
     </div>
   );
 }
