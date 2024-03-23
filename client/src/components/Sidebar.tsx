@@ -57,5 +57,20 @@ export default function Sidebar() {
         ))}
       </div>
     </div>
+      <div className="drawer-side p-4 w-80 min-h-full" data-theme="coffee">
+        <h1> PodPilot</h1>
+        <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
+        
+        <div className="grid grid-cols-2 gap-4">
+          {topicsArray.map(topic => (
+            <Card 
+              key={topic.title + 1} 
+              title={topic.title} 
+              img={topic.img} 
+              onClick={() => handleCardClick(topic.title)} 
+              />
+            ))}
+        </div> 
+      </div>
   );
 }

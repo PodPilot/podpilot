@@ -7,6 +7,9 @@ export default {
         rosarivo: ['Rosarivo', 'sans-serif'],
       },
     },
+  daisyui: {
+    themes: ["retro", "coffee"]
   },
   plugins: [require('@tailwindcss/typography'), require('daisyui')],
 };
+
