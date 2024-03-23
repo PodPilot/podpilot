@@ -4,7 +4,7 @@ export default function Input({
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
 }) {
   return (
-    <footer className="footer flex justify-center w-4/5 p-5">
+    <footer className="footer flex justify-center w-full p-5">
       <form className="form-control w-4/5" onSubmit={handleSubmit}>
         <label className="input input-primary flex items-center gap-2 w-full">
           <input
