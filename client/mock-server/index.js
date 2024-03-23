@@ -16,7 +16,9 @@ app.post('/', async (req, res) => {
   console.log(JSON.stringify(req.body, null, 2));
 
   res.send({
-    response: `this is the response to the query ${req.body.query}`,
+    response: `this is the response to the query {${req.body.query}}. These responses can be long, 
+      and might be separated into separate lines of thought. Perhaps we can consider requesting a 
+      newline character or something similar in order to puncuate pauses.`,
     suggestions: [
       'Donald Glover',
       'Data Engineering',

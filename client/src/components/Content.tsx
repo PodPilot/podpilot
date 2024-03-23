@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useState, useRef } from 'react';
 import Input from './Input';
-import { QueryResponse, sendQuery } from '../common/agent';
+import { sendQuery } from '../common/pilot';
 
 interface IContent {
   role: 'user' | 'pilot';
@@ -16,30 +16,46 @@ interface PilotMessage extends IContent {
   content: ReactElement;
 }
 
-const firstMessage: PilotMessage = {
-  role: 'pilot',
-  content: (
-    <div className="card w-96 bg-base-100 shadow-xl">
-      <div className="card-body">
-        <h1 className="card-title">Hello there</h1>
-        <p>What would you like to learn about?</p>
-      </div>
-    </div>
-  ),
-};
-
-const pilotResponseToContent = (qr: QueryResponse): ReactElement => (
-  <div className="card w-96 bg-base-100 shadow-xl">
-    <div className="card-body">
-      <p>{qr.response}</p>
-      <p>{qr.suggestions}</p>
-    </div>
-  </div>
+const pilotLine = (text: string) => (
+  <article className="font-serif prose prose-lg">
+    <p>{text}</p>
+  </article>
 );
+
+const firstMessages: PilotMessage[] = [
+  {
+    role: 'pilot',
+    content: (
+      <article className="font-serif prose">
+        <h2>Welcome to PodPilot</h2>
+      </article>
+    ),
+  },
+  {
+    role: 'pilot',
+    content: pilotLine('What are you looking to learn today?'),
+  },
+];
 
 const renderPilotContent = (message: PilotMessage) => {
   return message.content;
 };
+
+const renderSuggestions = (suggestions: string[]) => (
+  <div className="flex flex-row justify-start justify-items-center space-x-4">
+    {suggestions.map((suggestion, idx) => (
+      <div
+        className="card w-32 h-32 bg-base-100 shadow"
+        onClick={console.log}
+        key={idx}
+      >
+        <h2 className="font-serif prose prose-sm card-title">
+          {suggestion}
+        </h2>
+      </div>
+    ))}
+  </div>
+);
 
 const renderUserMessage = (message: UserMessage) => {
   return (
@@ -50,10 +66,10 @@ const renderUserMessage = (message: UserMessage) => {
 };
 
 export default function Content() {
-  const [conversation, setConversation] = useState<IContent[]>([
-    firstMessage,
-  ]);
+  const [conversation, setConversation] =
+    useState<IContent[]>(firstMessages);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [suggestions, setSuggestions] = useState<string[]>();
 
   const container = useRef<HTMLDivElement>(null);
 
@@ -67,14 +83,16 @@ export default function Content() {
     }
   };
 
+  // whenever the conversation is updated, scroll to the bottom of the screen
+  // TODO: may not be ideal UX when the pilot response is long
   useEffect(() => {
     scroll();
   }, [conversation]);
 
+  // if last message was a user message, go get a response from our pilot
   useEffect(() => {
     const lastMessage = conversation[conversation.length - 1];
 
-    // if last message was a user message, go get a response
     if (lastMessage.role === 'user') {
       setLoading(true);
       (async () => {
@@ -85,13 +103,27 @@ export default function Content() {
 
         const pilotResponse: PilotMessage = {
           role: 'pilot',
-          content: pilotResponseToContent(queryResponse),
+          content: pilotLine(queryResponse.response),
         };
 
         setConversation([...conversation, pilotResponse]);
+        setSuggestions(queryResponse.suggestions);
       })();
     }
   }, [conversation]);
+
+  // whenever suggestions are present, render them into a carousel of cards and clear them
+  useEffect(() => {
+    if (suggestions) {
+      const pilotResponse: PilotMessage = {
+        role: 'pilot',
+        content: renderSuggestions(suggestions),
+      };
+
+      setConversation([...conversation, pilotResponse]);
+      setSuggestions(undefined);
+    }
+  }, [suggestions]);
 
   const handleInputSubmit = async (e) => {
     const query = e.target[0].value;
