@@ -34,7 +34,7 @@ const topicsArray = [
 
 export default function Sidebar() {
   return (
-    <div className="drawer-side p-4 w-80 min-h-full bg-base-200">
+    <div className="drawer-side p-4 w-80 min-h-full" data-theme="coffee">
       <label
         htmlFor="my-drawer-2"
         aria-label="close sidebar"
