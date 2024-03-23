@@ -1,6 +1,10 @@
-export default function Input({ handleSubmit }) {
+export default function Input({
+  handleSubmit,
+}: {
+  handleSubmit: React.FormEventHandler<HTMLFormElement>;
+}) {
   return (
-    <div className="flex justify-center w-4/5 p-5 bottom-0">
+    <footer className="footer flex justify-center w-4/5 p-5">
       <form className="form-control w-4/5" onSubmit={handleSubmit}>
         <label className="input input-primary flex items-center gap-2 w-full">
           <input
@@ -24,6 +28,6 @@ export default function Input({ handleSubmit }) {
           </svg>
         </label>
       </form>
-    </div>
+    </footer>
   );
 }

@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useEffect, useState, useRef } from 'react';
 import Input from './Input';
 
 interface IContent {
@@ -43,43 +43,76 @@ export default function Content() {
   const [conversation, setConversation] = useState<IContent[]>([
     firstMessage,
   ]);
+  const container = useRef<HTMLDivElement>(null);
+
+  const scroll = () => {
+    const { offsetHeight, scrollHeight, scrollTop } =
+      container.current as HTMLDivElement;
+    console.log(offsetHeight, scrollHeight, scrollTop);
+    if (scrollHeight >= scrollTop + offsetHeight + 100) {
+      container.current?.scrollTo(0, scrollHeight);
+      console.log('scrolled!');
+    }
+  };
+
+  useEffect(() => {
+    scroll();
+  }, [conversation]);
 
   const handleInputSubmit = async (e) => {
     console.log(`submitting: ${e.target[0].value}`);
     e.preventDefault();
 
     const newMessage: UserMessage = {
-      content: e.target[0].value,
       role: 'user',
+      content: e.target[0].value,
     };
 
-    setConversation([...conversation, newMessage]);
+    const pilotDummyResponse: PilotMessage = {
+      role: 'pilot',
+      content: (
+        <div className="card w-96 bg-base-100 shadow-xl">
+          <div className="card-body">
+            I heard "{e.target[0].value}"
+          </div>
+        </div>
+      ),
+    };
+
+    setConversation([
+      ...conversation,
+      newMessage,
+      pilotDummyResponse,
+    ]);
 
     e.target.reset();
   };
 
   return (
-    <div className="drawer-content">
+    <>
       {/* Button for expanding the side panel on smaller screens */}
       <label
-        htmlFor="my-drawer-2"
+        htmlFor="drawer"
         className="btn btn-primary drawer-button lg:hidden"
       >
         Open drawer
       </label>
 
-      <div className="w-full h-[90vh] flex flex-col space-y-2 overflow-auto bg-base-200 md:[overflow-anchor:none]">
+      <div className="drawer-content bg-base-200">
         {/* Conversation Panel */}
-        {conversation.map((message) =>
-          message.role === 'user'
-            ? renderUserMessage(message as UserMessage)
-            : renderPilotContent(message as PilotMessage)
-        )}
+        <div
+          ref={container}
+          className="w-full h-[calc(100vh-8rem)] flex flex-col space-y-2 overflow-auto py-10 px-24"
+        >
+          {conversation.map((message) =>
+            message.role === 'user'
+              ? renderUserMessage(message as UserMessage)
+              : renderPilotContent(message as PilotMessage)
+          )}
+        </div>
 
-        {/* forces scroll to anchor to bottom of content area */}
-        <div id="anchor" className="md:[overflow-anchor:auto] h-px" />
+        <Input handleSubmit={handleInputSubmit} />
       </div>
-      <Input handleSubmit={handleInputSubmit} />
-    </div>
+    </>
   );
 }
