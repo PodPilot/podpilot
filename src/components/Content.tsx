@@ -53,7 +53,10 @@ const renderPilotContent = (message: PilotMessage) => {
   return message.content;
 };
 
-const renderSuggestions = (suggestions: Record<string, string>[]) => (
+const renderSuggestions = (
+  suggestions: Record<string, string>[],
+  onClick
+) => (
   <div className="carousel rounded-box p-2 space-x-4 min-h-36 ">
     {suggestions.map((suggestion, idx) => (
       <TopicCard
@@ -61,6 +64,7 @@ const renderSuggestions = (suggestions: Record<string, string>[]) => (
         key={idx}
         label={suggestion.label}
         query={suggestion.question}
+        onClick={onClick}
       />
     ))}
   </div>
@@ -139,12 +143,22 @@ export default function Content() {
     }
   }, [conversation]);
 
+  const onSuggestionClick = (query: string) => {
+    const userMessage: UserMessage = {
+      role: 'user',
+      content: query,
+    };
+
+    setInput('');
+    setConversation([...conversation, userMessage]);
+  };
+
   // whenever suggestions are present, render them into a carousel of cards and clear them
   useEffect(() => {
     if (suggestions) {
       const pilotResponse: PilotMessage = {
         role: 'pilot',
-        content: renderSuggestions(suggestions),
+        content: renderSuggestions(suggestions, onSuggestionClick),
       };
 
       setConversation([...conversation, pilotResponse]);

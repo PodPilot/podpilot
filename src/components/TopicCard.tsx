@@ -4,19 +4,21 @@ export default function TopicCard({
   label,
   query,
   img,
+  onClick = () => console.log('not implemented'),
 }: {
   className?: string;
   key: string | number;
   label: string;
   query: string;
   img?: string;
+  onClick: Function;
 }) {
   return (
     <div
       className={`card glass size-32 bg-secondary relative shadow ${className} ${
         img && 'image-full'
       }`}
-      onClick={() => console.log(query)}
+      onClick={() => onClick(query)}
       key={key}
     >
       {img && (
