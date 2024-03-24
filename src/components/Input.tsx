@@ -1,7 +1,11 @@
 export default function Input({
+  input,
+  setInput,
   handleSubmit,
   disabled,
 }: {
+  input: string;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
   disabled: boolean;
 }) {
@@ -14,6 +18,8 @@ export default function Input({
             className="grow"
             placeholder="Type your message..."
             disabled={disabled}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"

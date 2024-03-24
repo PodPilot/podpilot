@@ -87,26 +87,34 @@ export default function Content() {
   // even indices are user queries, odd indices are pilot answers
   const [context, setContext] = useState<string[]>([]);
 
+  // managing user input
+  const [input, setInput] = useState<string>('');
+
+  // managing loading state
   const [isLoading, setLoading] = useState<boolean>(false);
+
+  //
   const [suggestions, setSuggestions] = useState<string[]>();
 
-  const container = useRef<HTMLDivElement>(null);
-
-  const scroll = () => {
-    const { offsetHeight, scrollHeight, scrollTop } =
-      container.current as HTMLDivElement;
-    if (scrollHeight >= scrollTop + offsetHeight + 100) {
-      container.current?.scrollTo(0, scrollHeight);
-    }
-  };
+  // holds a reference to the conversation container, so we can manage auto scrolling
+  const convoContainer = useRef<HTMLDivElement>(null);
 
   // whenever the conversation is updated, scroll to the bottom of the screen
   // TODO: may not be ideal UX when the pilot response is long
+  const scroll = () => {
+    const { offsetHeight, scrollHeight, scrollTop } =
+      convoContainer.current as HTMLDivElement;
+    if (scrollHeight >= scrollTop + offsetHeight + 100) {
+      convoContainer.current?.scrollTo(0, scrollHeight);
+    }
+  };
   useEffect(() => {
     scroll();
   }, [conversation]);
 
   // if last message was a user message, go get a response from our pilot
+  // separate from handleUserSubmit because we want React to render the updated
+  // conversation before we begin fetching this
   useEffect(() => {
     const lastMessage = conversation[conversation.length - 1];
 
@@ -147,18 +155,20 @@ export default function Content() {
     }
   }, [suggestions]);
 
-  const handleInputSubmit = async (e) => {
-    const query = e.target[0].value;
-    console.log(`submitting: ${query}`);
+  // when the user submits, add the user message to the conversation queue
+  const handleUserSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    console.log(`submitting: ${input}`);
 
     e.preventDefault();
-    e.target.reset();
 
     const userMessage: UserMessage = {
       role: 'user',
-      content: query,
+      content: input,
     };
 
+    setInput('');
     setConversation([...conversation, userMessage]);
   };
 
@@ -175,7 +185,7 @@ export default function Content() {
       <div className="drawer-content bg-base-200">
         {/* Conversation Panel */}
         <div
-          ref={container}
+          ref={convoContainer}
           className="w-full h-[calc(100vh-8rem)] flex flex-col space-y-2 overflow-auto py-10 px-24"
         >
           {conversation.map((message) =>
@@ -186,7 +196,9 @@ export default function Content() {
         </div>
 
         <Input
-          handleSubmit={handleInputSubmit}
+          input={input}
+          setInput={setInput}
+          handleSubmit={handleUserSubmit}
           disabled={isLoading}
         />
       </div>

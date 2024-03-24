@@ -42,9 +42,10 @@ export const sendQuery = async ({
 
     return data;
   } catch (e) {
-    console.error(e.message);
+    const message = e instanceof Error ? e.message : 'Unknown Error!';
+    console.error(message);
     return {
-      answer: `There was an error! ${e.message}`,
+      answer: `There was an error! ${message}`,
       suggestions: [],
     };
   }
