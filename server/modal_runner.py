@@ -9,6 +9,11 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
 from dotenv import load_dotenv
 import os
+from typing import Dict
+from langchain_core.prompts import MessagesPlaceholder
+from langchain.chains import create_history_aware_retriever
+from langchain_core.messages import HumanMessage, AIMessage
+
 load_dotenv()
 
 image = Image.from_registry("ubuntu:22.04", add_python="3.10").pip_install(
@@ -63,11 +68,23 @@ def get_vector_from_documents(docs, embeddings):
 
 vector, documents, an_llm = get_vector_from_documents(docs, embeddings)
 
-prompt = ChatPromptTemplate.from_messages([
+def call_from_modal(query, context=None):
+  
+  chat_history = []
+  for idx, content in enumerate(context):
+    if idx % 2 == 0:
+      chat_history.append(HumanMessage(content=content))
+    else:
+      chat_history.append(AIMessage(content=content))
+      
+  print('chat_history', chat_history)
+      
+  prompt = ChatPromptTemplate.from_messages([
     ("system", """ 
-        You are knowledge curator tool.
-        You have access to the podcast transcripts in the context and can use the information to answer user queries.
-        You also need to search for the information across multiple podcast episodes.
+        You are a podcast knowledge curator tool.
+        You have access to the podcast transcripts in the context and previous conversation you had with the user. 
+        Please use this information to answer user queries.
+        You also need to search for the valid information across multiple podcast episodes.
         Please send the output in a markdown format.
         
         <context>
@@ -75,33 +92,35 @@ prompt = ChatPromptTemplate.from_messages([
         </context>
         
      """),
-    ("user", "Query: {input}")
+     MessagesPlaceholder(variable_name="chat_history"),
+    ("user", "\n\nQuery: {input}")
 ])
-document_chain = create_stuff_documents_chain(an_llm, prompt)
 
-def call_from_modal(query):
+  document_chain = create_stuff_documents_chain(an_llm, prompt)
   names = get_names_from_query(query)
   filtered_titles = get_titles_that_match_names(documents, names)
-  if len(filtered_titles) > 0:
-    retriever = vector.as_retriever(search_kwargs={"filter":{'title': {'$in' : filtered_titles}}, "k" : 6}, )
-  else:
-    retriever = vector.as_retriever(search_kwargs={"k" : 6})
   
+  if len(filtered_titles) > 0:
+    retriever = vector.as_retriever(search_kwargs={"filter":{'title': {'$in' : filtered_titles}}, "k" : 8}, )
+  else:
+    retriever = vector.as_retriever(search_kwargs={"k" : 8})
+    
   retrieval_chain = create_retrieval_chain(retriever, document_chain)
-  response = retrieval_chain.invoke({"input": query})
+  response = retrieval_chain.invoke({"input": query, "chat_history": chat_history})
   print(response)
   return response['answer']
   
-@stub.function()
-@web_endpoint(method="GET")
-def web(query: str):
-    answer = call_from_modal(query)
+@stub.function(cpu=8.0, memory=32768)
+@web_endpoint(method="POST")
+def web(data: Dict):
+    answer = call_from_modal(data['query'], data['context'])
     return {
-      "answer" : answer
+      "answer" : answer,
+      #todo : add suggestions here
     }
     
 @stub.function()
-def cli(query: str, show_sources: bool = False):
+def cli(query: str):
     answer = call_from_modal(query)
     # Terminal codes for pretty-printing.
     bold, end = "\033[1m", "\033[0m"
