@@ -25,9 +25,11 @@ export default function TopicCard({
         </figure>
       )}
 
-      <p className="font-serif text-secondary-content prose font-bold absolute bottom-2.5 left-2.5">
-        {label}
-      </p>
+      <div className="card-body">
+        <p className="font-serif text-secondary-content prose font-bold absolute bottom-2.5 left-2.5">
+          {label}
+        </p>
+      </div>
     </div>
   );
 }
