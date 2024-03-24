@@ -7,14 +7,25 @@ export interface QueryResponse {
   suggestions: string[];
 }
 
-export const sendQuery = async (
-  query: string
-): Promise<QueryResponse> => {
+export const sendQuery = async ({
+  query,
+  context,
+}: {
+  query: string;
+  context: string[];
+}): Promise<QueryResponse> => {
   try {
-    const url = `${BASE_URL}?query=${encodeURIComponent(query)}`;
-
-    console.log(`hitting ${url}`);
-    const res = await fetch(url);
+    console.log(`sending query: ${query}`);
+    const res = await fetch(`${BASE_URL}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+        context,
+      }),
+    });
 
     let data = await res.json();
 

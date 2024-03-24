@@ -21,7 +21,6 @@ interface PilotMessage extends IContent {
 
 // render the main answer from pilot as markdown
 const pilotLine = (text: string) => {
-  console.log(`rendering markdown: ${text}`);
   return (
     <article className="font-serif prose prose-lg">
       <Markdown>{text}</Markdown>
@@ -68,8 +67,15 @@ const renderUserMessage = (message: UserMessage) => {
 };
 
 export default function Content() {
+  // this holds the ready-to-render messages in the chat
+  // probably can do a lift off of context instead
   const [conversation, setConversation] =
     useState<IContent[]>(firstMessages);
+
+  // because I'm lazy I added a secondary data structure :shrug: sue me!
+  // even indices are user queries, odd indices are pilot answers
+  const [context, setContext] = useState<string[]>([]);
+
   const [isLoading, setLoading] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<string[]>();
 
@@ -96,9 +102,11 @@ export default function Content() {
     if (lastMessage.role === 'user') {
       setLoading(true);
       (async () => {
-        const queryResponse = await sendQuery(
-          (lastMessage as UserMessage).content
-        );
+        const query = (lastMessage as UserMessage).content;
+        const queryResponse = await sendQuery({
+          query,
+          context,
+        });
         setLoading(false);
 
         const pilotResponse: PilotMessage = {
@@ -107,6 +115,7 @@ export default function Content() {
         };
 
         setConversation([...conversation, pilotResponse]);
+        setContext([...context, query, queryResponse.answer]);
         setSuggestions(queryResponse.suggestions);
       })();
     }
@@ -121,6 +130,8 @@ export default function Content() {
       };
 
       setConversation([...conversation, pilotResponse]);
+
+      // clear suggestions for the next pilot response
       setSuggestions(undefined);
     }
   }, [suggestions]);

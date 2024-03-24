@@ -7,13 +7,13 @@ app.use(cors());
 
 const port = 3000;
 
-app.get('/', async (req, res) => {
+app.post('/', async (req, res) => {
   // fake delay
   await new Promise((resolve) => {
     setTimeout(resolve, 2000);
   });
 
-  console.log(JSON.stringify(req.query, null, 2));
+  console.log(JSON.stringify(req.body, null, 2));
 
   res.send({
     answer:
