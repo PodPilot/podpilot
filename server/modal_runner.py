@@ -176,7 +176,8 @@ def call_from_modal(query, context=None):
       chat_history.append(AIMessage(content=content))
       
   print('chat_history', chat_history)
-      
+              # Note - include the URL links of information you refered in end of the answer, if not provide the title of the information.
+
   prompt = ChatPromptTemplate.from_messages([
     ("system", """ 
         You are a podcast knowledge curator tool. Call yourself PodPilot.
@@ -184,7 +185,7 @@ def call_from_modal(query, context=None):
         Please use this information to answer user queries.
         You also need to search for the valid information across multiple podcast episodes.
         Please send the output in a markdown format, use text formatting wherever necessary.
-        Do not mention that you deriving this answer from the podcast transcript.
+        Note - please do not indicate that the answer is derived from the podcast transcript.
         Note - include the URL links of information you refered in end of the answer, if not provide the title of the information.
         
         <context>
@@ -219,7 +220,6 @@ def call_from_modal(query, context=None):
         ("system", """
           You are an expert related-question generator.
           The user had asked a query and the corresponding answer is given.
-          The chat history is also provided for your reference.
           The video titles can be used to understand the different topics the user can ask about.
           Use the query, video titles and the answer to the query to output the next 3 likely
           questions that the user might ask inorder to get more information on the topic or learn about related topics from different people. 
@@ -228,7 +228,7 @@ def call_from_modal(query, context=None):
             label : "Your label here"
           Note - The label should be a very short description of the question.
           
-          Warning - Please only return the output in a JSON format and nothing else.
+          Strictly only return the output in a JSON format and nothing else. Do not include any other information.
           
           <context>
             Video Titles: {filtered_titles} \n\n
@@ -236,7 +236,6 @@ def call_from_modal(query, context=None):
             Response: {answer} \n\n
           </context>
         """),
-        MessagesPlaceholder(variable_name="chat_history"),
         ("user", "\n\nSuggest follow-up questions:")
     ])
 
@@ -245,10 +244,10 @@ def call_from_modal(query, context=None):
   response = chain.invoke({
         "query": query,
         "answer": answer,
-        "chat_history": chat_history,
         "filtered_titles": filtered_titles
     })
   
+  print(answer)
   print(response.content)
   try:
     suggestions = json.loads(response.content)
