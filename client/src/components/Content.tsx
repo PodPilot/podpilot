@@ -39,7 +39,13 @@ const firstMessages: PilotMessage[] = [
   },
   {
     role: 'pilot',
-    content: pilotLine('What are you looking to learn today?'),
+    content: pilotLine(
+      "We've listened to BILLIONS of hours of podcast content 🎙️"
+    ),
+  },
+  {
+    role: 'pilot',
+    content: pilotLine('What do you want to know?'),
   },
 ];
 
@@ -51,7 +57,12 @@ const renderSuggestions = (suggestions: string[]) => (
   <div className="flex flex-row justify-start justify-items-center space-x-4">
     {suggestions.map((suggestion, idx) => (
       // TODO: update to pull label from suggestion
-      <TopicCard key={idx} label={suggestion} query={suggestion} />
+      <TopicCard
+        key={idx}
+        label={suggestion}
+        query={suggestion}
+        img={undefined}
+      />
     ))}
   </div>
 );

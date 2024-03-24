@@ -3,7 +3,7 @@ import TopicCard from './TopicCard';
 const topicsArray = [
   {
     label: 'Intermittent Fasting',
-    img: 'https://unsplash.com/photos/an-open-book-with-a-picture-of-a-waterfall-Xk8wUSX9ZiE',
+    img: 'https://images.unsplash.com/photo-1613408324997-fe8106e837e5?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     query: 'What is intermittent fasting about?',
   },
 
@@ -15,7 +15,7 @@ const topicsArray = [
 
   {
     label: 'Bio Hacks',
-    img: 'https://unsplash.com/photos/brown-and-black-fur-on-white-ceramic-plate-suj3od1uMv8',
+    img: 'https://images.unsplash.com/photo-1617339860632-f53c5b5dce4d?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     query: 'What is latest bio hack?',
   },
 
@@ -27,7 +27,7 @@ const topicsArray = [
 
   {
     label: 'Mens Health',
-    img: 'https://unsplash.com/photos/brown-and-black-fur-on-white-ceramic-plate-suj3od1uMv8',
+    img: 'https://images.unsplash.com/photo-1617339860632-f53c5b5dce4d?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     query: 'What is latest study on mens health?',
   },
 ];
@@ -39,7 +39,7 @@ export default function Sidebar() {
       data-theme="coffee"
     >
       <label
-        htmlFor="my-drawer-2"
+        htmlFor="drawer"
         aria-label="close sidebar"
         className="drawer-overlay"
       ></label>
@@ -54,6 +54,7 @@ export default function Sidebar() {
         {topicsArray.map((topic, idx) => (
           <TopicCard
             key={idx}
+            img={topic.img}
             label={topic.label}
             query={topic.query}
           />
