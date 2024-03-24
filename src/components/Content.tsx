@@ -200,12 +200,18 @@ export default function Content() {
           )}
         </div>
 
-        <Input
-          input={input}
-          setInput={setInput}
-          handleSubmit={handleUserSubmit}
-          disabled={isLoading}
-        />
+        {isLoading ? (
+          <div className="w-full flex flex-row justify-center">
+            <div className="loading loading-ring loading-lg"></div>
+          </div>
+        ) : (
+          <Input
+            input={input}
+            setInput={setInput}
+            handleSubmit={handleUserSubmit}
+            disabled={isLoading}
+          />
+        )}
       </div>
     </>
   );
