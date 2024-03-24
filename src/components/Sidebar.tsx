@@ -40,7 +40,7 @@ export default function Sidebar() {
       data-theme="coffee"
     >
       <div className="prose text-center pt-4">
-        <h2 className="font-rosarivo">Discover something...</h2>
+        <h2 className="font-rosarivo">Discover something new...</h2>
       </div>
 
       <div className="divider"></div>
