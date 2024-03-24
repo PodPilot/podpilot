@@ -54,14 +54,14 @@ const renderPilotContent = (message: PilotMessage) => {
 };
 
 const renderSuggestions = (suggestions: string[]) => (
-  <div className="flex flex-row justify-start justify-items-center space-x-4">
+  <div className="carousel rounded-box p-2 space-x-4 min-h-36 ">
     {suggestions.map((suggestion, idx) => (
       // TODO: update to pull label from suggestion
       <TopicCard
+        className="carousel-item"
         key={idx}
         label={suggestion}
         query={suggestion}
-        img={undefined}
       />
     ))}
   </div>

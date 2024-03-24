@@ -10,7 +10,7 @@ const port = 3000;
 app.post('/', async (req, res) => {
   // fake delay
   await new Promise((resolve) => {
-    setTimeout(resolve, 2000);
+    setTimeout(resolve, 1000);
   });
 
   console.log(JSON.stringify(req.body, null, 2));

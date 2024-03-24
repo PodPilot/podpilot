@@ -1,17 +1,19 @@
 export default function TopicCard({
+  className,
   key,
   label,
   query,
   img,
 }: {
+  className?: string;
   key: string | number;
   label: string;
   query: string;
-  img: string | undefined;
+  img?: string;
 }) {
   return (
     <div
-      className={`card glass w-32 h-32 bg-secondary relative shadow ${
+      className={`card glass size-32 bg-secondary relative shadow ${className} ${
         img && 'image-full'
       }`}
       onClick={() => console.log(query)}
