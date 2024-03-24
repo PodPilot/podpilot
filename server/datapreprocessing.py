@@ -28,7 +28,10 @@ def get_names_from_query(query):
   prompt = get_name(query)
   response = llm.invoke(prompt)
   content = response.content
-  res = list(map(lambda x : x.replace("'",""), content.strip('][').split(', ')))
+  try:
+    res = list(map(lambda x : x.replace("'",""), content.strip('][').split(', ')))
+  except Exception as e:
+    res = []
   return res
 
 def get_titles(documents):
@@ -37,16 +40,21 @@ def get_titles(documents):
   for doc in documents:
       title_to_doc[doc.metadata['title']].append(doc)
       
+  print('List of titles', list(title_to_doc.keys()))
   return list(title_to_doc.keys())
 
 def get_titles_that_match_names(documents, names):
   llm = get_faster_model()
-  titles = get_titles(documents)
-  prompt = get_matching_titles(names, titles)
+  # titles = get_titles(documents)
+  # print("Titles", titles)
+  prompt = get_matching_titles(names, documents)
   response = llm.invoke(prompt)
   content = response.content
   print(content)
-  res = ast.literal_eval(content)
+  try:
+    res = ast.literal_eval(content)
+  except Exception as e:
+    res = []
   return res
   # res = list(map(lambda x : x.replace("'",""), content.strip('][').split(', ')))
   
