@@ -15,7 +15,7 @@ export default function TopicCard({
 }) {
   return (
     <div
-      className={`card glass size-32 bg-secondary relative shadow ${className} ${
+      className={`card glass h-32 bg-secondary hover:bg-accent cursor-pointer relative shadow ${className} ${
         img && 'image-full'
       }`}
       onClick={() => onClick(query)}

@@ -60,7 +60,7 @@ const renderSuggestions = (
   <div className="carousel rounded-box p-2 space-x-4 min-h-36 ">
     {suggestions.map((suggestion, idx) => (
       <TopicCard
-        className="carousel-item"
+        className="carousel-item w-44"
         key={idx}
         label={suggestion.label}
         query={suggestion.question}

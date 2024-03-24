@@ -48,6 +48,7 @@ export default function Sidebar() {
       <div className="grid grid-cols-2 gap-4">
         {topicsArray.map((topic, idx) => (
           <TopicCard
+            className="w-32"
             key={idx}
             img={topic.img}
             label={topic.label}
