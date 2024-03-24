@@ -1,4 +1,6 @@
 import { ReactElement, useEffect, useState, useRef } from 'react';
+import Markdown from 'markdown-to-jsx';
+
 import Input from './Input';
 import { sendQuery } from '../common/pilot';
 import TopicCard from './TopicCard';
@@ -17,11 +19,15 @@ interface PilotMessage extends IContent {
   content: ReactElement;
 }
 
-const pilotLine = (text: string) => (
-  <article className="font-serif prose prose-lg">
-    <p>{text}</p>
-  </article>
-);
+// render the main answer from pilot as markdown
+const pilotLine = (text: string) => {
+  console.log(`rendering markdown: ${text}`);
+  return (
+    <article className="font-serif prose prose-lg">
+      <Markdown>{text}</Markdown>
+    </article>
+  );
+};
 
 const firstMessages: PilotMessage[] = [
   {
@@ -72,10 +78,8 @@ export default function Content() {
   const scroll = () => {
     const { offsetHeight, scrollHeight, scrollTop } =
       container.current as HTMLDivElement;
-    console.log(offsetHeight, scrollHeight, scrollTop);
     if (scrollHeight >= scrollTop + offsetHeight + 100) {
       container.current?.scrollTo(0, scrollHeight);
-      console.log('scrolled!');
     }
   };
 
@@ -99,7 +103,7 @@ export default function Content() {
 
         const pilotResponse: PilotMessage = {
           role: 'pilot',
-          content: pilotLine(queryResponse.response),
+          content: pilotLine(queryResponse.answer),
         };
 
         setConversation([...conversation, pilotResponse]);

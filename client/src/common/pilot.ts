@@ -1,7 +1,9 @@
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL =
+  // 'https://sugamxp--example-langchain-qanda-web-dev.modal.run';
+  'http://localhost:3000';
 
 export interface QueryResponse {
-  response: string;
+  answer: string;
   suggestions: string[];
 }
 
@@ -9,22 +11,29 @@ export const sendQuery = async (
   query: string
 ): Promise<QueryResponse> => {
   try {
-    const res = await fetch(`${BASE_URL}/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query,
-      }),
-    });
+    const url = `${BASE_URL}?query=${encodeURIComponent(query)}`;
 
-    const data = await res.json();
+    console.log(`hitting ${url}`);
+    const res = await fetch(url);
+
+    let data = await res.json();
+
+    if (!data.suggestions) {
+      data = {
+        ...data,
+        suggestions: [
+          'Donald Glover',
+          'Data Engineering',
+          'Intermittent Fasting',
+        ],
+      };
+    }
+
     return data;
   } catch (e) {
     console.error(e.message);
     return {
-      response: `There was an error! ${e.message}`,
+      answer: `There was an error! ${e.message}`,
       suggestions: [],
     };
   }
