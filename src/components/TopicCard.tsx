@@ -11,7 +11,7 @@ export default function TopicCard({
 }) {
   return (
     <div
-      className={`card w-32 h-32 bg-secondary relative shadow ${
+      className={`card glass w-32 h-32 bg-secondary relative shadow ${
         img && 'image-full'
       }`}
       onClick={() => console.log(query)}
@@ -23,7 +23,7 @@ export default function TopicCard({
         </figure>
       )}
 
-      <p className="font-serif text-neutral-content prose font-bold absolute bottom-2.5 left-2.5">
+      <p className="font-serif text-secondary-content prose font-bold absolute bottom-2.5 left-2.5">
         {label}
       </p>
     </div>

@@ -35,15 +35,9 @@ const topicsArray = [
 export default function Sidebar() {
   return (
     <div
-      className="drawer-side p-4 w-80 min-h-full"
+      className="drawer-side p-4 w-80 min-h-full hidden sm:block"
       data-theme="coffee"
     >
-      <label
-        htmlFor="drawer"
-        aria-label="close sidebar"
-        className="drawer-overlay"
-      ></label>
-
       <div className="prose text-center pt-4">
         <h2 className="font-rosarivo">Discover something...</h2>
       </div>

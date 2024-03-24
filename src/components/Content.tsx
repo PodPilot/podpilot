@@ -174,14 +174,6 @@ export default function Content() {
 
   return (
     <>
-      {/* Button for expanding the side panel on smaller screens */}
-      <label
-        htmlFor="drawer"
-        className="btn btn-primary drawer-button lg:hidden"
-      >
-        Open drawer
-      </label>
-
       <div className="drawer-content bg-base-200">
         {/* Conversation Panel */}
         <div
