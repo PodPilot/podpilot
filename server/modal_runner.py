@@ -54,7 +54,10 @@ docs, loaders, embeddings = loader()
 def get_vector_from_documents(docs, embeddings):
   text_splitter = RecursiveCharacterTextSplitter()
   documents = text_splitter.split_documents(docs)
-  vector = Chroma.from_documents(documents, embeddings)
+  if os.path.isdir("chroma_db"):
+    vector = Chroma(persist_directory = "./chroma_db", embedding_function = embeddings)
+  else:
+    vector = Chroma.from_documents(documents, embeddings, persist_directory = "./chroma_db")
   an_llm = get_anthropic_llm()
   return vector, documents, an_llm
 
@@ -79,9 +82,14 @@ document_chain = create_stuff_documents_chain(an_llm, prompt)
 def call_from_modal(query):
   names = get_names_from_query(query)
   filtered_titles = get_titles_that_match_names(documents, names)
-  retriever = vector.as_retriever(search_kwargs={"filter":{'title': {'$in' : filtered_titles}}, "k" : 6}, )
+  if len(filtered_titles) > 0:
+    retriever = vector.as_retriever(search_kwargs={"filter":{'title': {'$in' : filtered_titles}}, "k" : 6}, )
+  else:
+    retriever = vector.as_retriever(search_kwargs={"k" : 6})
+  
   retrieval_chain = create_retrieval_chain(retriever, document_chain)
   response = retrieval_chain.invoke({"input": query})
+  print(response)
   return response['answer']
   
 @stub.function()
