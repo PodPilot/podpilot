@@ -1,6 +1,7 @@
 const BASE_URL =
-  // 'https://sugamxp--example-langchain-qanda-web-dev.modal.run';
-  'http://localhost:3000';
+  process.env.NODE_ENV === 'production'
+    ? 'https://sugamxp--example-langchain-qanda-web-dev.modal.run'
+    : 'http://localhost:3000';
 
 export interface QueryResponse {
   answer: string;
