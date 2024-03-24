@@ -34,8 +34,9 @@ const topicsArray = [
 
 export default function Sidebar() {
   return (
+    // completely hidden on mobile
     <div
-      className="drawer-side p-4 w-80 min-h-full hidden sm:block"
+      className="drawer-side p-4 min-h-full hidden sm:block lg:w-80 "
       data-theme="coffee"
     >
       <div className="prose text-center pt-4">

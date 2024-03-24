@@ -27,7 +27,7 @@ export default function Input({
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6"
+            className="shrink-0 size-6 text-primary"
           >
             <path
               strokeLinecap="round"

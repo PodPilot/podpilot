@@ -178,7 +178,7 @@ export default function Content() {
         {/* Conversation Panel */}
         <div
           ref={convoContainer}
-          className="w-full h-[calc(100vh-8rem)] flex flex-col space-y-2 overflow-auto py-10 px-24"
+          className="w-full h-[calc(100vh-5rem)] flex flex-col space-y-2 overflow-auto py-5 sm:py-10 px-5 sm:px-24"
         >
           {conversation.map((message) =>
             message.role === 'user'
