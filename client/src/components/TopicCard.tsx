@@ -1,7 +1,7 @@
 export default function TopicCard({ key, label, query }) {
   return (
     <div
-      className="card w-32 h-32 bg-base-100 relative shadow"
+      className="card w-32 h-32 bg-secondary relative shadow"
       onClick={() => console.log(query)}
       key={key}
     >
