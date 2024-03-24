@@ -5,7 +5,7 @@ const BASE_URL =
 
 export interface QueryResponse {
   answer: string;
-  suggestions: string[];
+  suggestions: Record<string, string>[];
 }
 
 export const sendQuery = async ({
@@ -33,11 +33,7 @@ export const sendQuery = async ({
     if (!data.suggestions) {
       data = {
         ...data,
-        suggestions: [
-          'Donald Glover',
-          'Data Engineering',
-          'Intermittent Fasting',
-        ],
+        suggestions: [],
       };
     }
 

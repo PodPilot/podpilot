@@ -53,15 +53,14 @@ const renderPilotContent = (message: PilotMessage) => {
   return message.content;
 };
 
-const renderSuggestions = (suggestions: string[]) => (
+const renderSuggestions = (suggestions: Record<string, string>[]) => (
   <div className="carousel rounded-box p-2 space-x-4 min-h-36 ">
     {suggestions.map((suggestion, idx) => (
-      // TODO: update to pull label from suggestion
       <TopicCard
         className="carousel-item"
         key={idx}
-        label={suggestion}
-        query={suggestion}
+        label={suggestion.label}
+        query={suggestion.question}
       />
     ))}
   </div>
@@ -93,8 +92,8 @@ export default function Content() {
   // managing loading state
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  //
-  const [suggestions, setSuggestions] = useState<string[]>();
+  const [suggestions, setSuggestions] =
+    useState<Record<string, string>[]>();
 
   // holds a reference to the conversation container, so we can manage auto scrolling
   const convoContainer = useRef<HTMLDivElement>(null);
