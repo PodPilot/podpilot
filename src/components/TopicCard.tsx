@@ -11,7 +11,7 @@ export default function TopicCard({
   label: string;
   query: string;
   img?: string;
-  onClick: Function;
+  onClick?: Function;
 }) {
   return (
     <div

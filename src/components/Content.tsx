@@ -55,7 +55,7 @@ const renderPilotContent = (message: PilotMessage) => {
 
 const renderSuggestions = (
   suggestions: Record<string, string>[],
-  onClick
+  onClick: Function
 ) => (
   <div className="carousel rounded-box p-2 space-x-4 min-h-36 ">
     {suggestions.map((suggestion, idx) => (
